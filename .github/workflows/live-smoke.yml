@@ -1,0 +1,28 @@
+name: Live smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: placement
+        uses: ./
+        with:
+          page-url: https://getlinkbunny.com/
+          expected-url: https://saasaffiliate.net/
+      - if: always()
+        run: echo "Placement check result $RESULT, reason $REASON, matches $MATCHES, nofollow $NOFOLLOW"
+        env:
+          RESULT: ${{ steps.placement.outputs.result }}
+          REASON: ${{ steps.placement.outputs.reason }}
+          MATCHES: ${{ steps.placement.outputs.match-count }}
+          NOFOLLOW: ${{ steps.placement.outputs.nofollow-count }}

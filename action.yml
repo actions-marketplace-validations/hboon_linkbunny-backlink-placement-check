@@ -1,0 +1,37 @@
+name: LinkBunny Backlink Placement Check
+description: Check that a public page links to an expected URL with rel=nofollow, using LinkBunny's free hosted checker.
+author: LinkBunny
+branding:
+  icon: link
+  color: blue
+inputs:
+  page-url:
+    description: Public HTTPS page that should contain the link.
+    required: true
+  expected-url:
+    description: Public HTTPS URL the link should point to.
+    required: true
+  expected-anchor-text:
+    description: Optional exact anchor text (whitespace-normalized, case-sensitive). At least one matching link must have it.
+    required: false
+    default: ""
+  require-nofollow:
+    description: Fail unless every link to the expected URL has rel=nofollow.
+    required: false
+    default: "true"
+  fail-on-error:
+    description: Fail the step when the check cannot be completed (page not or only partly inspectable, checker unavailable, rate limited or timed out).
+    required: false
+    default: "true"
+outputs:
+  result:
+    description: pass, fail or error.
+  reason:
+    description: link_present, link_missing, nofollow_missing, anchor_mismatch, source_not_inspected, source_partially_inspected, invalid_input, invalid_request, check_failed, rate_limited, unavailable, timeout or invalid_response.
+  match-count:
+    description: Number of links to the expected URL in the fetched HTML, up to 100 (empty when the checker returned no result).
+  nofollow-count:
+    description: Number of those links with rel=nofollow (empty when the checker returned no result).
+runs:
+  using: node24
+  main: dist/index.mjs
